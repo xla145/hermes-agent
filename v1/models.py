@@ -4,7 +4,7 @@ import json
 import time
 import urllib.error
 import urllib.request
-from typing import Any
+from typing import Any, Callable
 from urllib.parse import urljoin
 
 from .config import ModelConfig
@@ -40,7 +40,12 @@ class ChatModel:
             kwargs["timeout"] = config.timeout
         self.client = OpenAI(**kwargs)
 
-    def complete(self, messages: list[dict[str, Any]], tools: list[dict[str, Any]] | None = None) -> ModelResponse:
+    def complete(
+        self,
+        messages: list[dict[str, Any]],
+        tools: list[dict[str, Any]] | None = None,
+        on_delta: Callable[[str], None] | None = None,
+    ) -> ModelResponse:
         last_error: Exception | None = None
         for attempt in range(self.config.max_retries + 1):
             try:
@@ -51,7 +56,10 @@ class ChatModel:
                 if tools:
                     kwargs["tools"] = [{"type": "function", "function": tool} for tool in tools]
                     kwargs["tool_choice"] = "auto"
-                response = self._create_completion(kwargs)
+                if on_delta is not None:
+                    response = self._create_streaming_completion(kwargs, on_delta)
+                else:
+                    response = self._create_completion(kwargs)
                 return self._normalize(response)
             except Exception as exc:
                 last_error = exc
@@ -102,6 +110,96 @@ class ChatModel:
             raise ModelError(f"HTTP {exc.code}: {body}") from exc
         except urllib.error.URLError as exc:
             raise ModelError(str(exc.reason)) from exc
+
+    def _create_streaming_completion(self, kwargs: dict[str, Any], on_delta: Callable[[str], None]) -> Any:
+        stream_kwargs = {**kwargs, "stream": True}
+        if self.client is not None:
+            return self._consume_openai_stream(self.client.chat.completions.create(**stream_kwargs), on_delta)
+        return self._consume_url_stream(stream_kwargs, on_delta)
+
+    def _consume_openai_stream(self, stream: Any, on_delta: Callable[[str], None]) -> dict[str, Any]:
+        content_parts: list[str] = []
+        tool_calls: dict[int, dict[str, Any]] = {}
+        finish_reason = "stop"
+        for chunk in stream:
+            choice = chunk.choices[0]
+            finish_reason = getattr(choice, "finish_reason", None) or finish_reason
+            delta = getattr(choice, "delta", None)
+            text = getattr(delta, "content", None) if delta is not None else None
+            if text:
+                content_parts.append(text)
+                on_delta(text)
+            for call in getattr(delta, "tool_calls", None) or []:
+                index = int(getattr(call, "index", 0) or 0)
+                item = tool_calls.setdefault(index, {"id": None, "type": "function", "function": {"name": "", "arguments": ""}})
+                if getattr(call, "id", None):
+                    item["id"] = call.id
+                function = getattr(call, "function", None)
+                if function is not None:
+                    if getattr(function, "name", None):
+                        item["function"]["name"] += function.name
+                    if getattr(function, "arguments", None):
+                        item["function"]["arguments"] += function.arguments
+                        on_delta(function.arguments)
+        return self._stream_response(content_parts, tool_calls, finish_reason)
+
+    def _consume_url_stream(self, kwargs: dict[str, Any], on_delta: Callable[[str], None]) -> dict[str, Any]:
+        if not self.config.base_url:
+            raise ModelError("OPENAI_BASE_URL or HERMES_V1_BASE_URL is required when openai package is unavailable")
+        if not self.config.api_key:
+            raise ModelError("OPENAI_API_KEY or HERMES_V1_API_KEY is required")
+        url = urljoin(self.config.base_url.rstrip("/") + "/", "chat/completions")
+        request = urllib.request.Request(
+            url,
+            data=json.dumps(kwargs).encode("utf-8"),
+            headers={"Authorization": f"Bearer {self.config.api_key}", "Content-Type": "application/json"},
+            method="POST",
+        )
+        content_parts: list[str] = []
+        tool_calls: dict[int, dict[str, Any]] = {}
+        finish_reason = "stop"
+        try:
+            with urllib.request.urlopen(request, timeout=self.config.timeout) as response:
+                for raw_line in response:
+                    line = raw_line.decode("utf-8", errors="replace").strip()
+                    if not line.startswith("data:"):
+                        continue
+                    payload = line.removeprefix("data:").strip()
+                    if payload == "[DONE]":
+                        break
+                    event = json.loads(payload)
+                    choice = event["choices"][0]
+                    finish_reason = choice.get("finish_reason") or finish_reason
+                    delta = choice.get("delta") or {}
+                    text = delta.get("content")
+                    if text:
+                        content_parts.append(text)
+                        on_delta(text)
+                    for call in delta.get("tool_calls") or []:
+                        index = int(call.get("index") or 0)
+                        item = tool_calls.setdefault(index, {"id": None, "type": "function", "function": {"name": "", "arguments": ""}})
+                        if call.get("id"):
+                            item["id"] = call["id"]
+                        function = call.get("function") or {}
+                        item["function"]["name"] += function.get("name") or ""
+                        arguments = function.get("arguments") or ""
+                        item["function"]["arguments"] += arguments
+                        if arguments:
+                            on_delta(arguments)
+        except urllib.error.HTTPError as exc:
+            body = exc.read().decode("utf-8", errors="replace")
+            raise ModelError(f"HTTP {exc.code}: {body}") from exc
+        except urllib.error.URLError as exc:
+            raise ModelError(str(exc.reason)) from exc
+        return self._stream_response(content_parts, tool_calls, finish_reason)
+
+    @staticmethod
+    def _stream_response(content_parts: list[str], tool_calls: dict[int, dict[str, Any]], finish_reason: str) -> dict[str, Any]:
+        message: dict[str, Any] = {"content": "".join(content_parts)}
+        calls = [call for _, call in sorted(tool_calls.items()) if call["function"]["name"]]
+        if calls:
+            message["tool_calls"] = calls
+        return {"choices": [{"message": message, "finish_reason": finish_reason}], "usage": {}}
 
     @staticmethod
     def _clean_messages(messages: list[dict[str, Any]]) -> list[dict[str, Any]]:
