@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>运输轨迹 - 智能物流管理系统</title>
+    <link rel="stylesheet" href="../assets/css/styles.css">
+</head>
+<body>
+    <div class="app">
+        <aside class="sidebar">
+            <div class="brand"><span class="brand-icon">🚚</span><span class="brand-text">智能物流系统</span></div>
+            <nav class="nav">
+                <div class="nav-section">
+                    <div class="nav-section-title">主要功能</div>
+                    <a href="../index.html" class="nav-link"><span class="nav-icon">📊</span><span>首页</span></a>
+                    <a href="orders.html" class="nav-link"><span class="nav-icon">📋</span><span>订单管理</span></a>
+                    <a href="vehicles.html" class="nav-link"><span class="nav-icon">🚛</span><span>车辆管理</span></a>
+                    <a href="drivers.html" class="nav-link"><span class="nav-icon">👤</span><span>司机管理</span></a>
+                    <a href="dispatch.html" class="nav-link"><span class="nav-icon">🎯</span><span>智能调度</span></a>
+                    <a href="tracking.html" class="nav-link active"><span class="nav-icon">🗺️</span><span>运输轨迹</span></a>
+                    <a href="exceptions.html" class="nav-link"><span class="nav-icon">⚠️</span><span>异常处理</span></a>
+                    <a href="receipts.html" class="nav-link"><span class="nav-icon">📄</span><span>签收回单</span></a>
+                    <a href="dashboard.html" class="nav-link"><span class="nav-icon">📈</span><span>数据看板</span></a>
+                </div>
+                <div class="nav-section">
+                    <div class="nav-section-title">系统设置</div>
+                    <a href="users.html" class="nav-link"><span class="nav-icon">⚙️</span><span>用户管理</span></a>
+                    <a href="roles.html" class="nav-link"><span class="nav-icon">🔐</span><span>角色权限</span></a>
+                </div>
+            </nav>
+        </aside>
+
+        <main class="main">
+            <header class="topbar">
+                <div class="topbar-left">
+                    <button class="btn-ghost toggle-sidebar" onclick="toggleSidebar()">☰</button>
+                    <div class="breadcrumb"><a href="../index.html">首页</a><span>/</span><span>运输轨迹</span></div>
+                </div>
+                <div class="topbar-right"><div class="user-info"><span class="user-avatar">管</span><span class="user-name">管理员</span></div></div>
+            </header>
+
+            <div class="content">
+                <div class="page-header"><h1>运输轨迹</h1></div>
+
+                <div class="tracking-container">
+                    <!-- 左侧：地图占位 -->
+                    <div class="card map-area">
+                        <div class="map-placeholder">
+                            <div class="map-icon">🗺️</div>
+                            <div class="map-text">地图展示区域</div>
+                            <div class="map-subtext">实时显示车辆位置和运输轨迹</div>
+                            <div class="vehicle-markers">
+                                <div class="marker" style="top:30%;left:40%">
+                                    <span class="marker-icon">🚚</span>
+                                    <span class="marker-label">粤B12345</span>
+                                </div>
+                                <div class="marker" style="top:60%;left:70%">
+                                    <span class="marker-icon">🚚</span>
+                                    <span class="marker-label">粤T67890</span>
+                                </div>
+                                <div class="marker" style="top:45%;left:25%">
+                                    <span class="marker-icon">🚚</span>
+                                    <span class="marker-label">粤J11111</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 右侧：车辆列表和里程碑 -->
+                    <div class="tracking-sidebar">
+                        <div class="card">
+                            <div class="card-header"><span class="card-title">运输中车辆</span></div>
+                            <div class="vehicle-list">
+                                <div class="vehicle-item active" onclick="selectVehicle(this)">
+                                    <div class="vehicle-info">
+                                        <span class="vehicle-no">粤B12345</span>
+                                        <span class="badge badge-success">运输中</span>
+                                    </div>
+                                    <div class="vehicle-route">深圳 → 上海</div>
+                                    <div class="vehicle-time">已运输 4小时30分钟</div>
+                                </div>
+                                <div class="vehicle-item" onclick="selectVehicle(this)">
+                                    <div class="vehicle-info">
+                                        <span class="vehicle-no">粤T67890</span>
+                                        <span class="badge badge-success">运输中</span>
+                                    </div>
+                                    <div class="vehicle-route">中山 → 成都</div>
+                                    <div class="vehicle-time">已运输 12小时15分钟</div>
+                                </div>
+                                <div class="vehicle-item" onclick="selectVehicle(this)">
+                                    <div class="vehicle-info">
+                                        <span class="vehicle-no">粤J11111</span>
+                                        <span class="badge badge-success">运输中</span>
+                                    </div>
+                                    <div class="vehicle-route">江门 → 西安</div>
+                                    <div class="vehicle-time">已运输 8小时45分钟</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card" style="margin-top: 20px;">
+                            <div class="card-header"><span class="card-title">运输里程碑</span></div>
+                            <div class="milestone-timeline">
+                                <div class="milestone-item completed">
+                                    <div class="milestone-dot"></div>
+                                    <div class="milestone-content">
+                                        <div class="milestone-title">订单创建</div>
+                                        <div class="milestone-time">05-25 10:30</div>
+                                    </div>
+                                </div>
+                                <div class="milestone-item completed">
+                                    <div class="milestone-dot"></div>
+                                    <div class="milestone-content">
+                                        <div class="milestone-title">已派单</div>
+                                        <div class="milestone-time">05-25 11:00</div>
+                                    </div>
+                                </div>
+                                <div class="milestone-item completed">
+                                    <div class="milestone-dot"></div>
+                                    <div class="milestone-content">
+                                        <div class="milestone-title">已装车</div>
+                                        <div class="milestone-time">05-25 14:00</div>
+                                    </div>
+                                </div>
+                                <div class="milestone-item current">
+                                    <div class="milestone-dot"></div>
+                                    <div class="milestone-content">
+                                        <div class="milestone-title">运输中</div>
+                                        <div class="milestone-time">05-25 14:30 - 当前</div>
+                                    </div>
+                                </div>
+                                <div class="milestone-item">
+                                    <div class="milestone-dot"></div>
+                                    <div class="milestone-content">
+                                        <div class="milestone-title">已到达</div>
+                                        <div class="milestone-time">-</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../assets/js/app.js"></script>
+    <script>
+        function selectVehicle(el) {
+            document.querySelectorAll('.vehicle-item').forEach(item => item.classList.remove('active'));
+            el.classList.add('active');
+        }
+    </script>
+    <style>
+        .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .page-header h1 { font-size: 20px; margin: 0; }
+        .tracking-container { display: grid; grid-template-columns: 1fr 350px; gap: 20px; }
+        .map-area { min-height: 500px; }
+        .map-placeholder { height: 500px; background: linear-gradient(135deg, #e6f7ff 0%, #f0f5ff 100%); display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; border-radius: 8px; }
+        .map-icon { font-size: 64px; margin-bottom: 16px; }
+        .map-text { font-size: 18px; font-weight: 600; color: #262626; }
+        .map-subtext { font-size: 14px; color: #8c8c8c; margin-top: 8px; }
+        .vehicle-markers { position: absolute; width: 100%; height: 100%; top: 0; left: 0; }
+        .marker { position: absolute; display: flex; flex-direction: column; align-items: center; cursor: pointer; }
+        .marker-icon { font-size: 32px; animation: bounce 2s infinite; }
+        .marker-label { background: #1890ff; color: #fff; padding: 2px 8px; border-radius: 4px; font-size: 12px; margin-top: 4px; }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+        .vehicle-list { max-height: 200px; overflow-y: auto; }
+        .vehicle-item { padding: 12px; border-bottom: 1px solid #f0f0f0; cursor: pointer; transition: all 0.2s; }
+        .vehicle-item:hover { background: #fafafa; }
+        .vehicle-item.active { background: #e6f7ff; border-left: 3px solid #1890ff; }
+        .vehicle-info { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+        .vehicle-no { font-weight: 600; color: #1890ff; }
+        .vehicle-route { font-size: 13px; color: #595959; }
+        .vehicle-time { font-size: 12px; color: #8c8c8c; margin-top: 4px; }
+        .milestone-timeline { padding: 10px 0; }
+        .milestone-item { display: flex; align-items: center; padding: 8px 0; position: relative; }
+        .milestone-item:not(:last-child)::before { content: ''; position: absolute; left: 5px; top: 24px; bottom: -8px; width: 2px; background: #e8e8e8; }
+        .milestone-dot { width: 12px; height: 12px; border-radius: 50%; background: #e8e8e8; margin-right: 12px; position: relative; z-index: 1; flex-shrink: 0; }
+        .milestone-item.completed .milestone-dot { background: #52c41a; }
+        .milestone-item.current .milestone-dot { background: #1890ff; box-shadow: 0 0 0 3px rgba(24,144,255,0.2); }
+        .milestone-title { font-size: 14px; font-weight: 500; }
+        .milestone-time { font-size: 12px; color: #8c8c8c; }
+    </style>
+</body>
+</html>

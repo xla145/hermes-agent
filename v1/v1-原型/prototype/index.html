@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智能物流管理系统 - 首页</title>
+    <link rel="stylesheet" href="./assets/css/styles.css">
+</head>
+<body>
+    <div class="app">
+        <!-- 侧边栏导航 -->
+        <aside class="sidebar">
+            <div class="brand">
+                <span class="brand-icon">🚚</span>
+                <span class="brand-text">智能物流系统</span>
+            </div>
+            <nav class="nav">
+                <div class="nav-section">
+                    <div class="nav-section-title">主要功能</div>
+                    <a href="index.html" class="nav-link active">
+                        <span class="nav-icon">📊</span>
+                        <span>首页</span>
+                    </a>
+                    <a href="pages/orders.html" class="nav-link">
+                        <span class="nav-icon">📋</span>
+                        <span>订单管理</span>
+                    </a>
+                    <a href="pages/vehicles.html" class="nav-link">
+                        <span class="nav-icon">🚛</span>
+                        <span>车辆管理</span>
+                    </a>
+                    <a href="pages/drivers.html" class="nav-link">
+                        <span class="nav-icon">👤</span>
+                        <span>司机管理</span>
+                    </a>
+                    <a href="pages/dispatch.html" class="nav-link">
+                        <span class="nav-icon">🎯</span>
+                        <span>智能调度</span>
+                    </a>
+                    <a href="pages/tracking.html" class="nav-link">
+                        <span class="nav-icon">🗺️</span>
+                        <span>运输轨迹</span>
+                    </a>
+                    <a href="pages/exceptions.html" class="nav-link">
+                        <span class="nav-icon">⚠️</span>
+                        <span>异常处理</span>
+                    </a>
+                    <a href="pages/receipts.html" class="nav-link">
+                        <span class="nav-icon">📄</span>
+                        <span>签收回单</span>
+                    </a>
+                    <a href="pages/dashboard.html" class="nav-link">
+                        <span class="nav-icon">📈</span>
+                        <span>数据看板</span>
+                    </a>
+                </div>
+                <div class="nav-section">
+                    <div class="nav-section-title">系统设置</div>
+                    <a href="pages/users.html" class="nav-link">
+                        <span class="nav-icon">⚙️</span>
+                        <span>用户管理</span>
+                    </a>
+                    <a href="pages/roles.html" class="nav-link">
+                        <span class="nav-icon">🔐</span>
+                        <span>角色权限</span>
+                    </a>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- 主内容区 -->
+        <main class="main">
+            <!-- 顶部栏 -->
+            <header class="topbar">
+                <div class="topbar-left">
+                    <button class="btn-ghost toggle-sidebar" onclick="toggleSidebar()">☰</button>
+                    <div class="breadcrumb">
+                        <span>首页</span>
+                    </div>
+                </div>
+                <div class="topbar-right">
+                    <div class="user-info">
+                        <span class="user-avatar">管</span>
+                        <span class="user-name">管理员</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- 页面内容 -->
+            <div class="content">
+                <!-- 欢迎区 -->
+                <div class="welcome-section">
+                    <h1>欢迎回来，管理员</h1>
+                    <p class="text-secondary">今天是 <span id="current-date"></span>，以下是系统运营概况</p>
+                </div>
+
+                <!-- 核心指标 -->
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-icon" style="background: #e6f7ff;">
+                            <span style="color: #1890ff;">📋</span>
+                        </div>
+                        <div class="metric-content">
+                            <div class="metric-label">今日订单</div>
+                            <div class="metric-value">128</div>
+                            <div class="metric-trend up">较昨日 +12%</div>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon" style="background: #f6ffed;">
+                            <span style="color: #52c41a;">🚚</span>
+                        </div>
+                        <div class="metric-content">
+                            <div class="metric-label">运输中</div>
+                            <div class="metric-value">86</div>
+                            <div class="metric-trend">进行中</div>
+                        </div>
+                    </div>
+                    <div class="metric-card warning">
+                        <div class="metric-icon" style="background: #fff2e8;">
+                            <span style="color: #fa541c;">⚠️</span>
+                        </div>
+                        <div class="metric-content">
+                            <div class="metric-label">异常预警</div>
+                            <div class="metric-value">3</div>
+                            <div class="metric-trend down">需及时处理</div>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon" style="background: #f9f0ff;">
+                            <span style="color: #722ed1;">📊</span>
+                        </div>
+                        <div class="metric-content">
+                            <div class="metric-label">车辆使用率</div>
+                            <div class="metric-value">78%</div>
+                            <div class="metric-trend up">较昨日 +5%</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 快捷操作 -->
+                <div class="section">
+                    <div class="section-title">快捷操作</div>
+                    <div class="quick-actions">
+                        <a href="pages/order-create.html" class="action-card">
+                            <span class="action-icon">➕</span>
+                            <span class="action-text">新建订单</span>
+                        </a>
+                        <a href="pages/dispatch.html" class="action-card">
+                            <span class="action-icon">🎯</span>
+                            <span class="action-text">快速调度</span>
+                        </a>
+                        <a href="pages/exceptions.html" class="action-card">
+                            <span class="action-icon">⚡</span>
+                            <span class="action-text">异常处理</span>
+                        </a>
+                        <a href="pages/dashboard.html" class="action-card">
+                            <span class="action-icon">📊</span>
+                            <span class="action-text">数据看板</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- 待办事项 -->
+                <div class="section">
+                    <div class="section-title">待办事项</div>
+                    <div class="card">
+                        <div class="todo-list">
+                            <div class="todo-item">
+                                <div class="todo-icon pending">📋</div>
+                                <div class="todo-content">
+                                    <div class="todo-title">待派单订单 - 订单号ORD20240525001</div>
+                                    <div class="todo-meta">客户：深圳科技有限公司 | 发往：上海</div>
+                                </div>
+                                <a href="pages/dispatch.html" class="btn btn-sm btn-primary">立即派单</a>
+                            </div>
+                            <div class="todo-item">
+                                <div class="todo-icon warning">⚠️</div>
+                                <div class="todo-content">
+                                    <div class="todo-title">异常待处理 - 运输延迟</div>
+                                    <div class="todo-meta">订单号ORD20240524008 | 司机：张师傅</div>
+                                </div>
+                                <a href="pages/exception-detail.html" class="btn btn-sm btn-warning">立即处理</a>
+                            </div>
+                            <div class="todo-item">
+                                <div class="todo-icon info">📄</div>
+                                <div class="todo-content">
+                                    <div class="todo-title">待确认签收 - 订单号ORD20240524005</div>
+                                    <div class="todo-meta">已到达目的地，等待确认</div>
+                                </div>
+                                <a href="pages/receipts.html" class="btn btn-sm btn-secondary">确认签收</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 最近订单 -->
+                <div class="section">
+                    <div class="section-title">最近订单</div>
+                    <div class="card">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>订单号</th>
+                                    <th>客户</th>
+                                    <th>货物</th>
+                                    <th>发货地</th>
+                                    <th>目的地</th>
+                                    <th>状态</th>
+                                    <th>创建时间</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><a href="pages/order-detail.html">ORD20240525005</a></td>
+                                    <td>深圳科技有限公司</td>
+                                    <td>电子产品 20箱</td>
+                                    <td>深圳</td>
+                                    <td>上海</td>
+                                    <td><span class="badge badge-success">运输中</span></td>
+                                    <td>2024-05-25 10:30</td>
+                                    <td><a href="pages/order-detail.html" class="btn-link">查看</a></td>
+                                </tr>
+                                <tr>
+                                    <td><a href="pages/order-detail.html">ORD20240525004</a></td>
+                                    <td>广州贸易公司</td>
+                                    <td>服装 50箱</td>
+                                    <td>广州</td>
+                                    <td>北京</td>
+                                    <td><span class="badge badge-info">已派单</span></td>
+                                    <td>2024-05-25 09:15</td>
+                                    <td><a href="pages/order-detail.html" class="btn-link">查看</a></td>
+                                </tr>
+                                <tr>
+                                    <td><a href="pages/order-detail.html">ORD20240525003</a></td>
+                                    <td>东莞电子厂</td>
+                                    <td>原材料 30吨</td>
+                                    <td>东莞</td>
+                                    <td>杭州</td>
+                                    <td><span class="badge badge-warning">待派单</span></td>
+                                    <td>2024-05-25 08:45</td>
+                                    <td><a href="pages/order-detail.html" class="btn-link">查看</a></td>
+                                </tr>
+                                <tr>
+                                    <td><a href="pages/order-detail.html">ORD20240525002</a></td>
+                                    <td>佛山制造公司</td>
+                                    <td>机械设备 2台</td>
+                                    <td>佛山</td>
+                                    <td>南京</td>
+                                    <td><span class="badge badge-success">已完成</span></td>
+                                    <td>2024-05-24 16:20</td>
+                                    <td><a href="pages/order-detail.html" class="btn-link">查看</a></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="./assets/js/app.js"></script>
+    <script>
+        // 显示当前日期
+        document.getElementById('current-date').textContent = new Date().toLocaleDateString('zh-CN', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+    </script>
+</body>
+</html>
